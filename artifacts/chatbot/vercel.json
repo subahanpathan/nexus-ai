@@ -1,7 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && rm -rf .pnpm-store node_modules && pnpm install",
+  "installCommand": "cd ../.. && pnpm install",
   "buildCommand": "cd ../.. && pnpm --filter @workspace/chatbot run build",
   "outputDirectory": "dist/public",
-  "framework": null
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
