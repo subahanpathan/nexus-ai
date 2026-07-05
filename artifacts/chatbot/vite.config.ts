@@ -28,16 +28,29 @@ function resolveClerkPublishableKey(
 export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, envDir, "");
   const basePath = process.env.BASE_PATH ?? "/";
+  const clerkPublishableKey = resolveClerkPublishableKey(env);
 
-  if (mode === "production" && !resolveClerkPublishableKey(env)) {
+  if (mode === "production" && !clerkPublishableKey) {
     throw new Error(
-      "Missing VITE_CLERK_PUBLISHABLE_KEY (required at Vite build time). " +
-        "Set it in Vercel: Project Settings → Environment Variables (Production, Preview, Development).",
+      "Missing Clerk publishable key (required at Vite build time). " +
+        "Set VITE_CLERK_PUBLISHABLE_KEY or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY in Vercel: " +
+        "Project Settings → Environment Variables (Production, Preview, Development).",
     );
   }
 
   return {
   base: basePath,
+  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
+  ...(clerkPublishableKey
+    ? {
+        define: {
+          "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY":
+            JSON.stringify(clerkPublishableKey),
+          "import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY":
+            JSON.stringify(clerkPublishableKey),
+        },
+      }
+    : {}),
   plugins: [
     react(),
     tailwindcss(),

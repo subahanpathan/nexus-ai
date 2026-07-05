@@ -33,8 +33,9 @@ function stripBase(path: string): string {
 
 if (!clerkPubKey) {
   throw new Error(
-    "Missing VITE_CLERK_PUBLISHABLE_KEY. " +
-      "Vite inlines this at build time — add it in Vercel: Project Settings → Environment Variables.",
+    "Missing Clerk publishable key. " +
+      "Set VITE_CLERK_PUBLISHABLE_KEY or NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY in Vercel: " +
+      "Project Settings → Environment Variables.",
   );
 }
 
