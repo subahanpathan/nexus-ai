@@ -1,0 +1,39 @@
+services:
+  # API Server (Backend Web Service)
+  - type: web
+    name: nexus-ai-api
+    env: node
+    plan: free
+    buildCommand: pnpm install && pnpm run build
+    startCommand: pnpm --filter @workspace/api-server run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nexus-ai-db
+          property: connectionString
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # Chatbot (Frontend Static Site)
+  - type: web
+    name: nexus-ai-chatbot
+    env: static
+    buildCommand: pnpm install && pnpm --filter @workspace/chatbot run build
+    staticPublishPath: artifacts/chatbot/dist/public
+    routes:
+      - type: rewrite
+        source: /((?!assets/).*)
+        destination: /index.html
+    envVars:
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false
+
+databases:
+  - name: nexus-ai-db
+    plan: free
