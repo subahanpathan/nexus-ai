@@ -14,7 +14,7 @@ COPY artifacts ./artifacts
 
 # Install dependencies and build the workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run build
+RUN pnpm --filter @workspace/api-server... run build
 
 # Expose port and start the API server
 EXPOSE 8080
