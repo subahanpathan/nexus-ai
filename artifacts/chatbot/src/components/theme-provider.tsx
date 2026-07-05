@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@clerk/react";
-import { useGetSettings } from "@workspace/api-client-react";
+import { useGetSettings, getGetSettingsQueryKey } from "@workspace/api-client-react";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
   const { data: settings } = useGetSettings({
-    query: { enabled: isLoaded && !!isSignedIn },
+    query: {
+      queryKey: getGetSettingsQueryKey(),
+      enabled: isLoaded && !!isSignedIn,
+    },
   });
   const [theme, setTheme] = useState<"light" | "dark" | "system">(
     () => (localStorage.getItem("theme") as "light" | "dark" | "system") || "system"
